@@ -1,33 +1,28 @@
 version: '3.1'
 
 services:
-  site:
-    build: .
-    container_name: conduitpr
-    ports: 
-      - "8888:8888"
-
-  pg_db:
-    image: postgres:13.4
+  db:
+    image: postgres:latest
+    container_name: conduit_pr
     restart: always
+    ports: 
+      - "5432:5432"
     environment:
-      - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=notesDB
     volumes:
       - db_pg_dart:/var/lib/postgresql/data/
-    ports:
-      - "5432:5432"
-    container_name: pg_db
+    command:
+       - "postgres"
+      - "-c"
+      - "port=5432"
 
-  adminer:
-    image: adminer
-    restart: always
+  api:
+    container_name: api_pr
+    build: . 
     ports:
-      - "8000:8080"
-    container_name: adminer
-
+      - 8888:8888
 
 volumes:
-  db_pg_dart:
+  db_vol:
